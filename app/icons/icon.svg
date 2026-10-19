@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#5b4bb7"/>
+  <!-- steam -->
+  <path d="M206 112c-18 22 18 38 0 62M256 96c-18 26 18 46 0 74M306 112c-18 22 18 38 0 62" fill="none" stroke="#e8e4fb" stroke-width="16" stroke-linecap="round"/>
+  <!-- bowl -->
+  <path d="M104 236h304a8 8 0 0 1 8 8c0 84-62 152-160 152S96 328 96 244a8 8 0 0 1 8-8z" fill="#f6f4ef"/>
+  <rect x="176" y="392" width="160" height="24" rx="12" fill="#f6f4ef"/>
+  <!-- food -->
+  <circle cx="196" cy="236" r="34" fill="#e09f3e"/>
+  <circle cx="262" cy="226" r="40" fill="#c44536"/>
+  <circle cx="324" cy="238" r="30" fill="#6a994e"/>
+  <path d="M104 236h304a8 8 0 0 1 8 8H96a8 8 0 0 1 8-8z" fill="#f6f4ef"/>
+  <!-- plus badge -->
+  <circle cx="404" cy="108" r="64" fill="#f0a54a"/>
+  <path d="M404 76v64M372 108h64" stroke="#ffffff" stroke-width="18" stroke-linecap="round"/>
+</svg>

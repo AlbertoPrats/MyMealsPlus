@@ -1,0 +1,8 @@
+node_modules/
+*.log
+.DS_Store
+
+# App backups contain your personal plan: never commit them.
+mymeals-*.json
+mymealsplus-*.json
+*.mymeals.json

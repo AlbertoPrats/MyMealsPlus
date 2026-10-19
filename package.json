@@ -1,0 +1,16 @@
+{
+  "name": "mymealsplus",
+  "private": true,
+  "type": "module",
+  "description": "MyMeals with an AI assistant: installable offline PWA, data and keys stay on the phone.",
+  "scripts": {
+    "build:recipes": "node tools/build-recipes.mjs",
+    "check:recipes": "node tools/build-recipes.mjs --check",
+    "serve": "node tools/serve.mjs",
+    "test": "node --test tests/core/*.test.js",
+    "test:e2e": "node --test tests/e2e/*.test.js"
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}
