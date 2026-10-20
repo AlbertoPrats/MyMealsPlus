@@ -1,8 +1,8 @@
 // Fill the empty slots of a prep period automatically.
 //
 // Greedy, in slot order:
-// 1. Use spare rations first (soonest-expiring), avoiding the same dish twice
-//    in a row when possible.
+// 1. Use spare rations first (soonest-expiring), but never the dish of the
+//    previous meal: leftovers wait at least one meal before coming back.
 // 2. Otherwise cook a new recipe from the food group furthest below its
 //    recommended weekly frequency, preferring recipes not used yet and ones
 //    with more servings (fewer cooking sessions = real meal prep) and ones
@@ -117,8 +117,10 @@ export function autofill(
         // Don't let one big batch crowd out other food groups: once its group is
         // full, leave the rest as spare rations (the orb keeps reminding).
         const balanced = someGroupShort() ? spare.filter((b) => !full(getRecipe(s, b.recipeId).groupId)) : spare;
-        const different = balanced.filter((b) => b.recipeId !== prevRecipe);
-        batch = (different.length ? different : balanced)[0] ?? null;
+        // Cooldown of one meal: never repeat the dish of the previous meal. If
+        // only that dish is left over, cook something new here and the spare
+        // rations come back a meal later (A, B, A, B rather than A, A, B, B).
+        batch = balanced.find((b) => b.recipeId !== prevRecipe) ?? null;
       }
 
       if (!batch) {
