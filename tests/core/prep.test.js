@@ -78,6 +78,40 @@ test("autofill fills every slot, reusing spare rations", () => {
   assert.equal(s.batches.length, 0);
 });
 
+test("autofill waits at least one meal before serving a dish's leftovers", () => {
+  // The example: 2 days, lunch and dinner, two 4-serving dishes available.
+  // Expected: A, B on day 1, then A's and B's spare rations on day 2.
+  const { s, comida, cena, recipe } = freshState();
+  const chili = recipe("Chili con carne y alubias");
+  const dal = recipe("Dal de lentejas rojas");
+  for (const r of s.recipes) if (r.id !== chili && r.id !== dal) r.status = "unknown";
+  const prep = P.createPrep(s, { startDate: day(0), days: 2 });
+  autofill(s, prep, { seed: 1 });
+  const at = (d, t) => P.mealView(s, s.meals.find((m) => m.date === day(d) && m.mealTypeId === t));
+  const [l1, d1, l2, d2] = [at(0, comida), at(0, cena), at(1, comida), at(1, cena)];
+  assert.notEqual(l1.recipe.id, d1.recipe.id);
+  assert.deepEqual([l2.recipe.id, d2.recipe.id], [l1.recipe.id, d1.recipe.id]);
+  assert.deepEqual([l1.isLeftover, d1.isLeftover, l2.isLeftover, d2.isLeftover], [false, false, true, true]);
+  assert.equal(s.batches.length, 2);
+});
+
+test("autofill never puts the same dish in two consecutive meals", () => {
+  for (const cookOnPrepDay of [false, true]) {
+    for (let seed = 1; seed <= 25; seed++) {
+      const { s } = freshState();
+      const prep = P.createPrep(s, { startDate: day(0), days: 7, prepDate: cookOnPrepDay ? day(-1) : null });
+      autofill(s, prep, { seed, cookOnPrepDay });
+      const dishes = [...s.meals]
+        .sort((a, b) => P.compareKeys(P.slotKey(s, a.date, a.mealTypeId), P.slotKey(s, b.date, b.mealTypeId)))
+        .map((m) => P.getBatch(s, m.batchId).recipeId);
+      assert.equal(dishes.length, 14);
+      for (let i = 1; i < dishes.length; i++) {
+        assert.notEqual(dishes[i], dishes[i - 1], `seed ${seed}, prep day ${cookOnPrepDay}: meal ${i} repeats the previous dish`);
+      }
+    }
+  }
+});
+
 test("autofill can cook everything on the prep day, respecting fridge life", () => {
   const { s } = freshState();
   const prepDay = day(-1);
